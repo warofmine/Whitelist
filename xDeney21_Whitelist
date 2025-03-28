@@ -4,6 +4,7 @@ from threading import *
 import threading
 from threading import Thread
 import struct
+import urllib.request
 import QtBind
 import time
 import random
