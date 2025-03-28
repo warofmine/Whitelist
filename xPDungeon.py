@@ -11,6 +11,25 @@ import os
 
 pVersion = '0.0.1'
 pName = 'PerfectDungeon'
+def CheckWhitelist():
+	whitelist_url = 'https://raw.githubusercontent.com/warofmine/Whitelist/refs/heads/main/xPDungeon.py'
+	with urllib.request.urlopen(whitelist_url) as response:
+		dosya_icerigi = response.read().decode('utf-8')
+
+def allow():
+	global allowplugin
+	icerik_listesi = CheckWhitelist()
+	nickname = get_character_data()['name']
+	if 'PerfectDungeon' in icerik_listesi :
+		allowplugin = True
+	elif nickname in icerik_listesi :
+		allowplugin = True
+	else :
+		if allowplugin == True :
+			allowplugin = False
+			
+		else :
+			pass
 
 # ______________________________ Initializing ______________________________ #
 
@@ -107,6 +126,8 @@ def Settings():
 txtFGWPROFILE = QtBind.createLineEdit(gui,'',155,291,70,20)
 lbl = QtBind.createLabel(gui,'<font color="red">Profile Name : ( Default FGW ) <font>',5,297)
 btnSaveConfig = QtBind.createButton(gui,'onSaveButtonClicked',"Save",5,275)
+
+
 
 def SyncProfile():
 	Profile = get_profile()
