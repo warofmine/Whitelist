@@ -12,6 +12,31 @@ from time import sleep
 import os
 import json
 
+def CheckWhitelist():
+	whitelist_url = 'https://raw.githubusercontent.com/warofmine/Whitelist/refs/heads/main/xDeney21_Whitelist'
+	with urllib.request.urlopen(whitelist_url) as response:
+		dosya_icerigi = response.read().decode('utf-8')
+
+	icerik_listesi = [item.strip() for item in dosya_icerigi.split(',')]
+
+	return icerik_listesi
+
+def allow():
+	global allowplugin
+	icerik_listesi = CheckWhitelist()
+	nickname = get_character_data()['name']
+	if 'DungeonSupporter' in icerik_listesi :
+		allowplugin = True
+	elif nickname in icerik_listesi :
+		allowplugin = True
+	else :
+		if allowplugin == True :
+			allowplugin = False
+			
+		else :
+			pass
+
+
 class CustomThread(Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs={}, Verbose=None):
