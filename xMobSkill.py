@@ -6,30 +6,40 @@ import random
 import binascii
 import QtBind
 
+# Plugin bilgisi
 allowplugin = False
-pName = 'xMobSkill' 
+pName = 'xMobSkill'
 
 # GUI oluşturma
-gui = QtBind.init(__name__, "xMobSkill")
+gui = QtBind.init(__name__, pName)
 lineedit1 = QtBind.createLineEdit(gui, "Yaratığın adını yaz", 150, 200, 100, 16)
 
 def handle_joymax(opcode, data):
-    if opcode == 0xB070:
-        # log("Server: (Opcode) 0x" + '{:02X}'.format(opcode) + " (Data) "+ ("None" if not data else ' '.join('{:02X}'.format(x) for x in data)))
-        kim = struct.unpack_from("<I", data, 14)[0]
-        if kim > 0:
-            test = struct.unpack_from("<I", data, 7)[0]
+    if opcode == 0xB070 and data:
+
+        # Güvenlik: Veri boyutunu kontrol et
+        if len(data) >= 18:  # 14 + 4 byte okunacak
+            test = struct.unpack_from("<I", data, 7)[0]     # Muhtemelen mob unique ID
+            kim = struct.unpack_from("<I", data, 14)[0]     # Muhtemelen skill caster
+
+            # Tüm yaratıkları al
             for uID, srth in get_monsters().items():
                 if uID == test:
-                    # Kullanıcının girdiği yaratık adını al
+                    # Kullanıcının GUI'den girdiği yaratık adını al
                     user_input = QtBind.text(gui, lineedit1).strip()
 
-                    # Eğer yaratık adı boş değilse karşılaştır
                     if user_input and srth['name'] == user_input:
-                            log(f"1. log = {data[0]}")
-                            log(f"2. log = {data[1]}")
-                            log(f"4. log = {data[3]}")
-                            log(f"5. log = {data[4]}")
+                        log(f"[xMobSkill] Eşleşen yaratık bulundu: {srth['name']}")
+                        log(f"[xMobSkill] Data Dump: {' '.join('{:02X}'.format(x) for x in data)}")
+                        log(f"[xMobSkill] data[0] = {data[0]}")
+                        log(f"[xMobSkill] data[1] = {data[1]}")
+                        log(f"[xMobSkill] data[2] = {data[2]}")
+                        log(f"[xMobSkill] data[3] = {data[3]}")
+                        log(f"[xMobSkill] data[4] = {data[4]}")
+        else:
+            log(f"[xMobSkill] Uyarı: 0xB070 paketi yeterli uzunlukta değil. Uzunluk: {len(data)}")
+            log(f"[xMobSkill] Paket: {' '.join('{:02X}'.format(x) for x in data)}")
+
     return True
 
-log('By TheWorstOne')
+log('[xMobSkill] Plugin yüklendi - By TheWorstOne')
