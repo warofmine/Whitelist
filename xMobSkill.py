@@ -19,13 +19,13 @@ def handle_joymax(opcode, data):
 
         # Güvenlik: Veri boyutunu kontrol et
         if len(data) >= 18:  # 14 + 4 byte okunacak
-            test = struct.unpack_from("<I", data, 7)[0]     # Muhtemelen mob unique ID
-            kim = struct.unpack_from("<I", data, 14)[0]     # Muhtemelen skill caster
+            test = struct.unpack_from("<I", data, 7)[0]     
+            kim = struct.unpack_from("<I", data, 14)[0]     
 
             # Tüm yaratıkları al
             for uID, srth in get_monsters().items():
                 if uID == test:
-                    # Kullanıcının GUI'den girdiği yaratık adını al
+                    
                     user_input = QtBind.text(gui, lineedit1).strip()
 
                     if user_input and srth['name'] == user_input:
