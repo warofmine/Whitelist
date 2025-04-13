@@ -12,7 +12,7 @@ pVersion = '0.0.1'
 
 Times = 0
 Process = False
-Working = True
+Working = False
 Done = False
 unique_name = None
 allowplugin = False
