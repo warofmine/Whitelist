@@ -517,40 +517,6 @@ def btnAddChannel_clicked():
 		else:
 			log('Plugin: Error, the Discord Channel ID must be a number!')
 
-# Send a notification to discord channel (UPDATED)
-def _Notify(channel_id, message, info, colour):
-    url = "http://127.0.0.1:8080"  # Flask API adresin
-    token = "secure_api_token"     # Discord botundaki ALLOWED_TOKEN ile aynı olmalı
-
-    try:
-        if QtBind.isChecked(gui, cbxAddTimestamp):
-            from datetime import datetime
-            message = "**" + datetime.now().strftime('%H:%M:%S') + "** " + message
-
-        data = {
-            "token": token,
-            "channel": channel_id,
-            "message": message
-        }
-        if info:
-            data["info"] = info
-        if colour is not None:
-            data["colour"] = colour
-
-        params = json.dumps(data).encode('utf8')
-        if not url.endswith("/"):
-            url += "/"
-
-        req = urllib.request.Request(url + "api/notify", data=params, headers={'content-type': 'application/json'})
-        with urllib.request.urlopen(req, timeout=5) as f:
-            response = f.read().decode('utf-8')
-            if response in ['true', 'success']:
-                log("Plugin: notify sent to Discord!")
-            else:
-                log("Plugin: notify failed [" + response + "]")
-    except Exception as ex:
-        log("Plugin: Notify error [" + str(ex) + "]")
-
 
 # Remove discord channel
 def btnRemChannel_clicked():
@@ -595,41 +561,33 @@ def Notify(channel_id,message,info=None,colour=None):
 	Timer(0.001,_Notify,(channel_id,message,info,colour)).start()
 
 # Send a notification to discord channel
-def _Notify(channel_id,message,info,colour):
-	# Check if there is enough data to create a notification
-	if not channel_id or not message:
-		return
-	url = URL_HOST
-	if not url:
-		return
-	token = QtBind.text(gui,tbxToken)
-	# Try to send notification
-	try:
-		# Add timestamp
-		if QtBind.isChecked(gui,cbxAddTimestamp):
-			message ="**"+datetime.now().strftime('%H:%M:%S')+"** "+message
-		# Create json to send
-		data = {"token":token,"channel":channel_id,"message":message}
-		if info:
-			data["info"] = info
-		if colour != None:
-			data["colour"] = colour
-		# Prepare data to send through POST method
-		params = json.dumps(data).encode('utf8')
-		if not url.endswith("/"):
-			url += "/"
-		req = urllib.request.Request(url+"api/notify",data=params,headers={'content-type':'application/json'})
-		with urllib.request.urlopen(req,timeout=5) as f:
-			try:
-				msg = f.read().decode('utf-8')
-				if msg == 'true' or msg == 'success':
-					log("Plugin: notify sent to Discord!")
-				else:
-					log("Plugin: notify failed ["+msg+"]")
-			except Exception as ex2:
-				log("Plugin: Error reading response from server ["+str(ex2)+"]")
-	except Exception as ex:
-		log("Plugin: Error loading url ["+str(ex)+"] to Notify")
+def _Notify(channel_id, message, info, colour):
+    url = "http://127.0.0.1:8080"  # Flask API adresin
+    token = "secure_api_token"     # Flask botundaki ALLOWED_TOKEN ile aynı
+
+    try:
+        message = "**" + datetime.now().strftime('%H:%M:%S') + "** " + message
+
+        data = {
+            "token": token,
+            "channel": channel_id,
+            "message": message
+        }
+        if info:
+            data["info"] = info
+        if colour is not None:
+            data["colour"] = colour
+
+        params = json.dumps(data).encode('utf8')
+        req = urllib.request.Request(url + "/api/notify", data=params, headers={'content-type': 'application/json'})
+        with urllib.request.urlopen(req, timeout=5) as f:
+            response = f.read().decode('utf-8')
+            if response in ['true', 'success']:
+                log("Plugin: notify sent to Discord!")
+            else:
+                log("Plugin: notify failed [" + response + "]")
+    except Exception as ex:
+        log("Plugin: Notify error [" + str(ex) + "]")
 
 # Fetch messages on discord (queue) from the guild server indicated
 def Fetch(guild_id):
