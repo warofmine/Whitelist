@@ -112,12 +112,6 @@ _y+=20
 QtBind.createLabel(gui,'Unique near to you',_x+_cmbxWidth+4,_y+3)
 cmbxEvtNear_unique = QtBind.createCombobox(gui,_x,_y,_cmbxWidth,_Height)
 _y+=20
-QtBind.createLabel(gui,'Hunter/Trader near',_x+_cmbxWidth+4,_y+3)
-cmbxEvtNear_hunter = QtBind.createCombobox(gui,_x,_y,_cmbxWidth,_Height)
-_y+=20
-QtBind.createLabel(gui,'Thief near',_x+_cmbxWidth+4,_y+3)
-cmbxEvtNear_thief = QtBind.createCombobox(gui,_x,_y,_cmbxWidth,_Height)
-_y+=20
 QtBind.createLabel(gui,'Character attacked',_x+_cmbxWidth+4,_y+3)
 cmbxEvtChar_attacked = QtBind.createCombobox(gui,_x,_y,_cmbxWidth,_Height)
 _y+=20
@@ -141,7 +135,7 @@ cmbxEvtMessage_item_sold = QtBind.createCombobox(gui,_x,_y,_cmbxWidth,_Height)
 _y+=20
 
 # wrap to iterate
-cmbxTriggers={'cmbxEvtChar_joined':cmbxEvtChar_joined,'cmbxEvtChar_disconnected':cmbxEvtChar_disconnected,'cmbxEvtMessage_uniqueSpawn':cmbxEvtMessage_uniqueSpawn,'cmbxEvtMessage_uniqueKilled':cmbxEvtMessage_uniqueKilled,'cmbxEvtMessage_ctf':cmbxEvtMessage_ctf,'cmbxEvtMessage_battlearena':cmbxEvtMessage_battlearena,'cmbxEvtMessage_fortress':cmbxEvtMessage_fortress,'cmbxEvtMessage_consignmenthunter':cmbxEvtMessage_consignmenthunter,'cmbxEvtMessage_consignmentthief':cmbxEvtMessage_consignmentthief,'cmbxEvtNear_gm':cmbxEvtNear_gm,'cmbxEvtNear_unique':cmbxEvtNear_unique,'cmbxEvtNear_hunter':cmbxEvtNear_hunter,'cmbxEvtNear_thief':cmbxEvtNear_thief,'cmbxEvtChar_attacked':cmbxEvtChar_attacked,'cmbxEvtChar_died':cmbxEvtChar_died,'cmbxEvtPet_died':cmbxEvtPet_died,'cmbxEvtMessage_quest':cmbxEvtMessage_quest,'cmbxEvtBot_alchemy':cmbxEvtBot_alchemy,'cmbxEvtMessage_item_sold':cmbxEvtMessage_item_sold}
+cmbxTriggers={'cmbxEvtChar_joined':cmbxEvtChar_joined,'cmbxEvtChar_disconnected':cmbxEvtChar_disconnected,'cmbxEvtMessage_uniqueSpawn':cmbxEvtMessage_uniqueSpawn,'cmbxEvtMessage_uniqueKilled':cmbxEvtMessage_uniqueKilled,'cmbxEvtMessage_ctf':cmbxEvtMessage_ctf,'cmbxEvtMessage_battlearena':cmbxEvtMessage_battlearena,'cmbxEvtMessage_fortress':cmbxEvtMessage_fortress,'cmbxEvtMessage_consignmenthunter':cmbxEvtMessage_consignmenthunter,'cmbxEvtMessage_consignmentthief':cmbxEvtMessage_consignmentthief,'cmbxEvtNear_gm':cmbxEvtNear_gm,'cmbxEvtNear_unique':cmbxEvtNear_unique,'cmbxEvtChar_attacked':cmbxEvtChar_attacked,'cmbxEvtChar_died':cmbxEvtChar_died,'cmbxEvtPet_died':cmbxEvtPet_died,'cmbxEvtMessage_quest':cmbxEvtMessage_quest,'cmbxEvtBot_alchemy':cmbxEvtBot_alchemy,'cmbxEvtMessage_item_sold':cmbxEvtMessage_item_sold}
 
 # Graphic user interface (+)
 gui_ = QtBind.init(__name__,pName+"(+)")
@@ -406,10 +400,6 @@ def loadConfigs():
 					QtBind.setText(gui,cmbxEvtNear_gm,triggers["cmbxEvtNear_gm"])
 				if "cmbxEvtNear_unique" in triggers:
 					QtBind.setText(gui,cmbxEvtNear_unique,triggers["cmbxEvtNear_unique"])
-				if "cmbxEvtNear_hunter" in triggers:
-					QtBind.setText(gui,cmbxEvtNear_hunter,triggers["cmbxEvtNear_hunter"])
-				if "cmbxEvtNear_thief" in triggers:
-					QtBind.setText(gui,cmbxEvtNear_thief,triggers["cmbxEvtNear_thief"])
 				if "cmbxEvtChar_attacked" in triggers:
 					QtBind.setText(gui,cmbxEvtChar_attacked,triggers["cmbxEvtChar_attacked"])
 				if "cmbxEvtChar_died" in triggers:
@@ -921,10 +911,6 @@ def handle_event(t, data):
 		Notify(QtBind.text(gui,cmbxEvtNear_gm),"|`"+character_data['name']+"`| - **GameMaster** `"+data+"` is near to you!",CreateInfo("position",get_position()),colour=0xFF5722)
 	elif t == 0:
 		Notify(QtBind.text(gui,cmbxEvtNear_unique),"|`"+character_data['name']+"`| - **"+data+"** unique is near to you!",CreateInfo("position",get_position()),colour=0xFF5722)
-	elif t == 1:
-		Notify(QtBind.text(gui,cmbxEvtNear_hunter),"|`"+character_data['name']+"`| - **Hunter/Trader** `"+data+"` is near to you",CreateInfo("position",get_position()),colour=0xFF5722)
-	elif t == 2:
-		Notify(QtBind.text(gui,cmbxEvtNear_thief),"|`"+character_data['name']+"`| - **Thief** `"+data+"` is near to you!",CreateInfo("position",get_position()),colour=0xFF5722)
 	elif t == 4:
 		Notify(QtBind.text(gui,cmbxEvtChar_attacked),"|`"+character_data['name']+"`| - `"+data+"` is attacking you!",colour=0xFF5722)
 	elif t == 7:
