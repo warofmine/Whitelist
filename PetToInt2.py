@@ -78,7 +78,4 @@ def event_loop():
 def handle_event(t, data):
     pass
 
-def handle_joymax(opcode, data, encrypted):
-    return True
-
 log(f"[{pName}] v{pVersion} yüklendi. PET'teki itemler belirli aralıklarla çantaya aktarılır.")
