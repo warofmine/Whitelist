@@ -7,51 +7,177 @@ import struct
 import math
 import phBotChat
 import re
+import os
+import json
 
 pName = 'xFgwStone_Evasion'
 gui = QtBind.init(__name__, pName)
 
-# GUI Alanlar
+# GUI Elements
 QtBind.createLabel(gui, "Data[0]:", 15, 15)
 tbxData0 = QtBind.createLineEdit(gui, "1", 70, 13, 30, 16)
-
 QtBind.createLabel(gui, "Data[1]:", 110, 15)
 tbxData1 = QtBind.createLineEdit(gui, "0", 170, 13, 30, 16)
-
 QtBind.createLabel(gui, "Data[3]:", 210, 15)
 tbxData3 = QtBind.createLineEdit(gui, "82", 270, 13, 30, 16)
-
 QtBind.createLabel(gui, "Data[4]:", 310, 15)
 tbxData4 = QtBind.createLineEdit(gui, "128", 370, 13, 30, 16)
-
-QtBind.createLabel(gui, "Kaçıştan sonra başlatma süresi (sn):", 15, 45)
+QtBind.createLabel(gui, "Kaçıştan sonra başlatma süre (sn):", 15, 45)
 tbxDelay = QtBind.createLineEdit(gui, "2", 220, 43, 30, 16)
-
 QtBind.createLabel(gui, "TAŞ Delay (saniye):", 15, 70)
 tbxStoneDelay = QtBind.createLineEdit(gui, "4", 140, 68, 30, 16)
-
-QtBind.createLabel(gui, "Takip Edilecek Kişi:", 15, 100)
+QtBind.createLabel(gui, "Takip Edilecek Kii:", 15, 100)
 tbxTraceName = QtBind.createLineEdit(gui, "MerVa", 140, 98, 100, 16)
-
 QtBind.createLabel(gui, "Yaratık İsmi:", 15, 125)
 tbxTargetMob = QtBind.createLineEdit(gui, "Mangyang", 100, 123, 120, 16)
+cbxListenPartyChat = QtBind.createCheckBox(gui, '', 'Party chati dinle', 15, 150)
+btnSaveConfig = QtBind.createButton(gui, 'saveConfigs', 'Ayarları Kaydet', 15, 180)
 
-# Yeni GUI elemanları (Party Chat Dinleme Checkbox)
-cbxListenPartyChat = QtBind.createCheckBox(gui, 'toggle_listen_party_chat', 'Party chati dinle', 15, 150)
-
-
-
+# Yıldız seçimi
 QtBind.createLabel(gui, "Seviye Seçimi:", 430, 0)
-rb1Star = QtBind.createCheckBox(gui, '', '101-110 lvl 1*', 430, 20)
-rb2Star = QtBind.createCheckBox(gui, '', '101-110 lvl 2*', 430, 40)
-rb3Star = QtBind.createCheckBox(gui, '', '101-110 lvl 3*', 430, 60)
-rb4Star = QtBind.createCheckBox(gui, '', '101-110 lvl 4*', 430, 80)
+rb1Star = QtBind.createCheckBox(gui, 'rb1Star_clicked', '101-110 lvl 1*', 430, 20)
+rb2Star = QtBind.createCheckBox(gui, 'rb2Star_clicked', '101-110 lvl 2*', 430, 40)
+rb3Star = QtBind.createCheckBox(gui, 'rb3Star_clicked', '101-110 lvl 3*', 430, 60)
+rb4Star = QtBind.createCheckBox(gui, 'rb4Star_clicked', '101-110 lvl 4*', 430, 80)
 
 selected_star = None
 target_position = None
 retry_count = 0
 max_retry = 3
 evading = False
+
+
+def rb1Star_clicked(checked):
+    global selected_star
+    if checked:
+        selected_star = 84
+        QtBind.setChecked(gui, rb2Star, False)
+        QtBind.setChecked(gui, rb3Star, False)
+        QtBind.setChecked(gui, rb4Star, False)
+        QtBind.setText(gui, tbxData3, str(selected_star))
+
+def rb2Star_clicked(checked):
+    global selected_star
+    if checked:
+        selected_star = 85
+        QtBind.setChecked(gui, rb1Star, False)
+        QtBind.setChecked(gui, rb3Star, False)
+        QtBind.setChecked(gui, rb4Star, False)
+        QtBind.setText(gui, tbxData3, str(selected_star))
+
+def rb3Star_clicked(checked):
+    global selected_star
+    if checked:
+        selected_star = 86
+        QtBind.setChecked(gui, rb1Star, False)
+        QtBind.setChecked(gui, rb2Star, False)
+        QtBind.setChecked(gui, rb4Star, False)
+        QtBind.setText(gui, tbxData3, str(selected_star))
+
+def rb4Star_clicked(checked):
+    global selected_star
+    if checked:
+        selected_star = 87
+        QtBind.setChecked(gui, rb1Star, False)
+        QtBind.setChecked(gui, rb2Star, False)
+        QtBind.setChecked(gui, rb3Star, False)
+        QtBind.setText(gui, tbxData3, str(selected_star))
+
+def update_star_selection():
+    QtBind.setChecked(gui, rb1Star, selected_star == 84)
+    QtBind.setChecked(gui, rb2Star, selected_star == 85)
+    QtBind.setChecked(gui, rb3Star, selected_star == 86)
+    QtBind.setChecked(gui, rb4Star, selected_star == 87)
+    if selected_star:
+        QtBind.setText(gui, tbxData3, str(selected_star))
+
+def is_joined():
+    data = get_character_data()
+    return data and "name" in data and data["name"] != ""
+
+def getPath():
+    return get_config_dir() + pName + "\\"
+
+def getConfig():
+    data = get_character_data()
+    if data and "server" in data and "name" in data:
+        return getPath() + f"{data['server']}_{data['name']}.json"
+    return None
+
+def saveConfigs():
+    if not is_joined():
+        log(f"[{pName}] Karakter oyunda değil.")
+        return
+
+    config_path = getConfig()
+    if not config_path:
+        log(f"[{pName}] Config yolu alınamadı.")
+        return
+
+    folder = os.path.dirname(config_path)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    data = {
+        "Data0": QtBind.text(gui, tbxData0),
+        "Data1": QtBind.text(gui, tbxData1),
+        "Data3": QtBind.text(gui, tbxData3),
+        "Data4": QtBind.text(gui, tbxData4),
+        "Delay": QtBind.text(gui, tbxDelay),
+        "StoneDelay": QtBind.text(gui, tbxStoneDelay),
+        "TraceName": QtBind.text(gui, tbxTraceName),
+        "TargetMob": QtBind.text(gui, tbxTargetMob),
+        "ListenPartyChat": QtBind.isChecked(gui, cbxListenPartyChat),
+        "SelectedStar": selected_star
+    }
+
+    try:
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        log(f"[{pName}] Ayarlar kaydedildi. ({config_path})")
+    except Exception as e:
+        log(f"[{pName}] Ayar kaydedilirken hata: {str(e)}")
+
+def loadConfigs():
+    global selected_star
+    if not is_joined():
+        return
+
+    config_path = getConfig()
+    if config_path and os.path.exists(config_path):
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            QtBind.setText(gui, tbxData0, data.get("Data0", "1"))
+            QtBind.setText(gui, tbxData1, data.get("Data1", "0"))
+            QtBind.setText(gui, tbxData3, data.get("Data3", "82"))
+            QtBind.setText(gui, tbxData4, data.get("Data4", "128"))
+            QtBind.setText(gui, tbxDelay, data.get("Delay", "2"))
+            QtBind.setText(gui, tbxStoneDelay, data.get("StoneDelay", "4"))
+            QtBind.setText(gui, tbxTraceName, data.get("TraceName", "MerVa"))
+            QtBind.setText(gui, tbxTargetMob, data.get("TargetMob", "Mangyang"))
+            QtBind.setChecked(gui, cbxListenPartyChat, data.get("ListenPartyChat", False))
+
+            selected_star = data.get("SelectedStar", None)
+            update_star_selection()
+
+            log(f"[{pName}] Ayarlar başarıyla yüklendi.")
+        except Exception as e:
+            log(f"[{pName}] Ayar dosyası yüklenirken hata: {str(e)}")
+    else:
+        log(f"[{pName}] Ayar dosyası bulunamadı.")
+
+def update_star_selection():
+    QtBind.setChecked(gui, rb1Star, selected_star == 84)
+    QtBind.setChecked(gui, rb2Star, selected_star == 85)
+    QtBind.setChecked(gui, rb3Star, selected_star == 86)
+    QtBind.setChecked(gui, rb4Star, selected_star == 87)
+
+def joined_game():
+    loadConfigs()
+
+
 
 def get_trace_target_name():
     return QtBind.text(gui, tbxTraceName).strip()
@@ -351,6 +477,7 @@ def handle_chat(t, player, msg):
 
 
 
-
+# Garanti olsun diye plugin reload anında da ayarları yükle
+loadConfigs()
 
 log(f"[{pName}] Plugin yüklendi. Taş saldırısı, taş olma ve tehlikeli çizgi kaçışı aktif.")
