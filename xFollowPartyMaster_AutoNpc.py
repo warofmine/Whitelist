@@ -73,7 +73,7 @@ def which_kale_kapilari():
     result = []
     if npcs:
         for UniqueID, NPC in npcs.items():
-            if NPC['name'].startswith('Hotan Kalesi Kapısı '):
+            if NPC['name'].startswith('Hotan Kale Kapısı '):
                 log(f"Bulundu: {NPC['name']} - ID: {UniqueID}")
                 result.append(UniqueID)
     return result
