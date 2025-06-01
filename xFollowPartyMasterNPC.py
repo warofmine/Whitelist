@@ -7,7 +7,7 @@ import threading
 import os
 
 pName = 'xFollowPartyMaster-revitalized'
-pVersion = '0.0.1'
+pVersion = '0.0.2'
 
 # ______________________________ ' Initializing ' ______________________________ #
 
