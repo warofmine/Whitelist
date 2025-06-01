@@ -92,52 +92,53 @@ def WhereIsLeader():
 	return (0,0)
 
 def Goddamnbro():
-	leader = WhereIsLeader()
-	pos_data = get_position()
-	character = (pos_data['x'], pos_data['y'])
-	for name, pos in npcs.items():
-		result = is_npc_in_range(character, pos)
+    leader = WhereIsLeader()
+    pos_data = get_position()
+    character = (pos_data['x'], pos_data['y'])
+    for name, pos in npcs.items():
+        result = is_npc_in_range(character, pos)
         kapilar = which_kale_kapilari()
-		if result :
-			if name == "npc1" :
-				for name2, pos2 in npcs2.items():
-					result2 = is_npc_in_range(leader, pos2)
-					if result2 :
-						npc_uid1 = kapilar
-						if name2 == "npc1" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid1 , 2 , 153),False)
-						if name2 == "npc2" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid1 , 2 , 154),False)
-						if name2 == "npc3" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid1 , 2 , 155),False)
-						if name2 == "npc4" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid1 , 2 , 156),False)
-			elif name == "npc2" :
-				for name2, pos2 in npcs2.items():
-					result2 = is_npc_in_range(leader, pos2)
-					if result2 :
-						npc_uid2 = kapilar
-						if name2 == "npc1" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid2 , 2 , 153),False)
-						if name2 == "npc2" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid2 , 2 , 154),False)
-						if name2 == "npc3" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid2 , 2 , 155),False)
-						if name2 == "npc4" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid2 , 2 , 156),False)
-			elif name == "npc3" :
-				for name2, pos2 in npcs2.items():
-					result2 = is_npc_in_range(leader, pos2)
-					if result2 :
-						npc_uid3 = kapilar
-						if name2 == "npc1" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid3 , 2 , 153),False)
-						if name2 == "npc2" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid3 , 2 , 154),False)
-						if name2 == "npc3" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid3 , 2 , 155),False)
-						if name2 == "npc4" :
-							inject_joymax(0x705A,struct.pack('<IBI', npc_uid3 , 2 , 156),False)
+        if result:
+            if name == "npc1":
+                for name2, pos2 in npcs2.items():
+                    result2 = is_npc_in_range(leader, pos2)
+                    if result2:
+                        npc_uid1 = kapilar
+                        if name2 == "npc1":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid1, 2, 153), False)
+                        if name2 == "npc2":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid1, 2, 154), False)
+                        if name2 == "npc3":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid1, 2, 155), False)
+                        if name2 == "npc4":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid1, 2, 156), False)
+            elif name == "npc2":
+                for name2, pos2 in npcs2.items():
+                    result2 = is_npc_in_range(leader, pos2)
+                    if result2:
+                        npc_uid2 = kapilar
+                        if name2 == "npc1":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid2, 2, 153), False)
+                        if name2 == "npc2":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid2, 2, 154), False)
+                        if name2 == "npc3":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid2, 2, 155), False)
+                        if name2 == "npc4":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid2, 2, 156), False)
+            elif name == "npc3":
+                for name2, pos2 in npcs2.items():
+                    result2 = is_npc_in_range(leader, pos2)
+                    if result2:
+                        npc_uid3 = kapilar
+                        if name2 == "npc1":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid3, 2, 153), False)
+                        if name2 == "npc2":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid3, 2, 154), False)
+                        if name2 == "npc3":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid3, 2, 155), False)
+                        if name2 == "npc4":
+                            inject_joymax(0x705A, struct.pack('<IBI', npc_uid3, 2, 156), False)
+
 
 # Return folder path
 
