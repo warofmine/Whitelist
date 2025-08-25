@@ -93,7 +93,7 @@ def handle_joymax(opcode, data):
                             log(f"bytes_data alınamadı: {str(e)}")
                         for skill_id, skill_info in skills.items():
                             Frozen = skill_info['name'] in ["Frozen Spear","Donmuş Mızrak"]
-                            Charged = skill_info['name'] in ["Charged Wind","Yüklü Rüzgar"]
+                            Charged = skill_info['name'] in ["Charged Squall","Yüklü Fırtına"]
                             if timer is None or not Timer.is_alive(timer):
                                 if Charged:
                                     Skill_ID1 = struct.pack('<I', skill_id)
