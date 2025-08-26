@@ -2,12 +2,32 @@ from phBot import *
 import QtBind
 import struct
 from threading import Timer
+import os
 
 pName = 'AACancel'
 pVersion = '0.0.1'
 gui = QtBind.init(__name__, pName)
 
-# Global değişkenler
+Skill_ID = 9944  
+
+try:
+    skill_file_path = os.path.join(get_config_dir(), 'skill.txt')
+    if not os.path.exists(skill_file_path):
+        with open(skill_file_path, 'w') as f:
+            f.write(str(Skill_ID))
+        #log(f"[AACancel] oluşturuldu.")
+    else:
+        with open(skill_file_path, 'r') as f:
+            content = f.readline().strip()
+            if content.isdigit():
+                Skill_ID = int(content)
+                #log(f"[AACancel]  yüklendi. ")
+            else:
+                log(f"Terorist")
+except Exception as e:
+    log(f"Terorist")
+
+# --- Global değişkenler ---
 timer = None
 timer2 = None
 timer3 = None
@@ -55,14 +75,13 @@ def _is_unique_target_from_packet(data):
         if len(data) >= 23:
             target_id = struct.unpack_from('<I', data, 19)[0]
         elif len(data) >= 20:
-            log('data yeterli')
             target_id = struct.unpack_from('<I', data, 15)[0]
 
         if target_id is not None:
             monsters = get_monsters()
             mob = monsters.get(target_id, None)
             if mob:
-                log(f"Target ID: {target_id} | Mob: {mob['name']} | Type: {mob['type']}")
+                #log(f"Target ID: {target_id} | Mob: {mob['name']} | Type: {mob['type']}")
                 if mob.get('type') == 3:  # 3 = Unique
                     return True
     except Exception as e:
@@ -73,23 +92,19 @@ def handle_joymax(opcode, data):
     global timer, timer2, timer3, PackedCharged1, PackedCharged2, PackedCharged3
     global sAttack, sUseSkill, sDelayText
 
-
     if sAttack and opcode == 0xB070:
-        # Oyuncu ID eşleşmesi kontrolü
         if len(data) >= 14:
             packet_player_id = struct.unpack_from('<I', data, 7)[0]
             current_player_id = get_character_data()['player_id']
             if packet_player_id != current_player_id:
-                log(f'[AACancel] Player ID uyuşmuyor → current_player_id: {current_player_id} | packet_player_id: {packet_player_id}')
+                #log(f'[AACancel] Player ID uyuşmuyor → current_player_id: {current_player_id} | packet_player_id: {packet_player_id}')
                 return True
         
-
         if not _is_unique_target_from_packet(data):
             return True
 
         formattedData = ''.join('{:02X}'.format(x) for x in data)
         Player_ID = get_character_data()['player_id']
-        Skill_ID = 8454
         Packed_PlayerID = struct.pack('<I', Player_ID)
         Packed_SkillID = struct.pack('<I', Skill_ID)
         playerID_Data = ''.join('{:02X}'.format(x) for x in Packed_PlayerID)
@@ -110,7 +125,7 @@ def handle_joymax(opcode, data):
                 if offset is not None:
                     try:
                         bytes_data = bytes.fromhex(formattedData[offset:offset+8])
-                        log(f"bytes_data: {bytes_data.hex()}")
+                        #log(f"bytes_data: {bytes_data.hex()}")
                     except Exception as e:
                         log(f"bytes_data alınamadı: {str(e)}")
                     for skill_id, skill_info in skills.items():
@@ -121,13 +136,13 @@ def handle_joymax(opcode, data):
                                 Skill_ID1 = struct.pack('<I', skill_id)
                                 packet = b'\x01\x04' + Skill_ID1 + b'\x01' + bytes_data
                                 PackedCharged2 = ''.join('{:02X}'.format(x) for x in Skill_ID1)
-                                log("Gönderilen packet (str): " + packet.hex().upper())
+                                #log("Gönderilen packet (str): " + packet.hex().upper())
                                 inject_joymax(0x7074, packet, False)
                             if Frozen:
                                 Skill_ID2 = struct.pack('<I', skill_id)
                                 packet = b'\x01\x04' + Skill_ID2 + b'\x01' + bytes_data
                                 PackedCharged1 = ''.join('{:02X}'.format(x) for x in Skill_ID2)
-                                log("Gönderilen packet (str): " + packet.hex().upper())
+                                #log("Gönderilen packet (str): " + packet.hex().upper())
                                 inject_joymax(0x7074, packet, False)
 
     return True
